@@ -846,6 +846,7 @@ void dis_effect(player &p, disease &dis) {
             break;
 
         case DI_DRUNK:
+            p.add_disease("bleed", 600); //DEBUG DEBUGGITY
             handle_alcohol(p, dis);
             break;
 
@@ -882,7 +883,13 @@ void dis_effect(player &p, disease &dis) {
                 p.hurt(dis.bp, dis.side == -1 ? 0 : dis.side, 1);
                 p.mod_per_bonus(-1);
                 p.mod_str_bonus(-1);
-                g->m.add_field(p.posx, p.posy, fd_blood, 1);
+                /*field_id type_blood = fd_blood; //Determine player's blood type, purely cosmetic
+                if (p.has_trait("THRESH_PLANT"))
+                type_blood = fd_blood_veggy;
+                else if (p.has_trait("THRESH_INSECT") || p.has_trait("THRESH_SPIDER"))
+                type_blood = fd_blood_insect;
+                g->m.add_field(p.posx, p.posy, type_blood, 1);*/ //Old code
+                //g->m.add_field(p.posx, p.posy, p.getBloodType(), 1); //Ideal code
             }
             break;
 

@@ -936,6 +936,24 @@ body_part Creature::select_body_part(Creature *source, int hit_roll)
     return selected_part;
 }
 
+field_id Creature::getBloodType()
+{
+    //player blood type case
+    player p;
+    if (p.has_trait("THRESH_PLANT"))
+        return fd_blood_veggy;
+    if (p.has_trait("THRESH_INSECT") || p.has_trait("THRESH_SPIDER"))
+        return fd_blood_insect;
+    return fd_blood;
+    //monster blood type case (gotta make the function work differently depending on how it was called)
+    /*monster c;
+    if (c.made_of("veggy"))
+        return fd_blood_veggy;
+    if (c.made_of("iflesh"))
+        return fd_blood_insect;
+    return fd_blood;*/
+}
+
 void Creature::init_hit_weights()
 {
     std::map<body_part, double> attacker_equal_weights;

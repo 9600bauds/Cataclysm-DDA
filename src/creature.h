@@ -10,6 +10,7 @@
 #include "bodypart.h"
 #include "color.h"
 #include "mtype.h"
+#include "field.h" //This breaks stuff!
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -305,6 +306,7 @@ class Creature
         virtual char symbol();
         virtual bool is_symbol_highlighted();
 
+        field_id getBloodType(); //??????
 
         //Hit weight work.
         static std::map<int, std::map<body_part, double> > default_hit_weights;
