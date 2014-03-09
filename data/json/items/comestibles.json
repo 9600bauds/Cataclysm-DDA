@@ -6165,13 +6165,8 @@
         "addiction_potential" : 0,
         "nutrition" : 9,
         "description" : "A salty treat of a snack, covered in chocolate.",
-<<<<<<< HEAD
-        "price" : 1300,
-        "material" : ["wheat", "junk"],
-=======
         "price" : 200,
-        "material" : "junk",
->>>>>>> 887dbcfd1a096ec7a2abbe60edc9ef270e8d9aab
+        "material" : ["wheat", "junk"],
         "tool" : "null",
         "volume" : 2,
         "cutting" : 0,
