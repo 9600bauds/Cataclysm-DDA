@@ -4057,13 +4057,11 @@ dealt_damage_instance player::deal_damage(Creature* source, body_part bp,
     case bp_mouth: // Fall through to head damage
     case bp_head:
         mod_pain(1);
-        /*
-        hp_cur[hp_head] -= dam; //this looks like an extra damage hit, as is applied in apply_damage from creature: deal_damage()
+        hp_cur[hp_head] -= dam; //this looks like an extra damage hit, as is applied in apply_damage from player::apply_damage()
         if (hp_cur[hp_head] < 0) {
             lifetime_stats()->damage_taken+=hp_cur[hp_head];
             hp_cur[hp_head] = 0;
         }
-         */
         break;
     case bp_torso:
         // getting hit throws off our shooting
@@ -7362,7 +7360,7 @@ bool player::eat(item *eaten, it_comest *comest)
         add_morale(MORALE_ANTIWHEAT, -75, -400, 300, 240);
     }
     if ((has_trait("HERBIVORE") || has_trait("RUMINANT")) &&
-            eaten->made_of("flesh")) {
+            (eaten->made_of("flesh") || eaten->made_of("egg"))) {
         if (!one_in(3)) {
             vomit();
         }
@@ -9517,11 +9515,15 @@ bool player::armor_absorb(damage_unit& du, item& armor) {
     return armor_damaged;
 }
 void player::absorb_hit(body_part bp, int, damage_instance &dam) {
-    std::vector<int> armor_indices;
-
-    get_armor_on(this,bp,armor_indices);
     for (std::vector<damage_unit>::iterator it = dam.damage_units.begin();
             it != dam.damage_units.end(); ++it) {
+
+        // Recompute the armor indices for every damage unit because we may have
+        // destroyed armor earlier in the loop.
+        std::vector<int> armor_indices;
+
+        get_armor_on(this,bp,armor_indices);
+
         // CBMs absorb damage first before hitting armour
         if (has_active_bionic("bio_ads")) {
             if (it->amount > 0 && power_level > 1) {
@@ -9916,7 +9918,12 @@ void player::practice (const calendar& turn, Skill *s, int amount)
 
     if (amount > 0 && level.isTraining())
     {
+        int oldLevel = skillLevel(s);
         skillLevel(s).train(amount);
+        int newLevel = skillLevel(s);
+        if (newLevel > oldLevel) {
+            g->add_msg(_("Your skill in %s has increased to %d!"), s->name().c_str(), newLevel);
+        }
 
         int chance_to_drop = focus_pool;
         focus_pool -= chance_to_drop / 100;
